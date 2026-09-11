@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Aviator Demo - Profile & Money</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Arial,sans-serif}body{padding:0}.app{width:100%;max-width:520px;margin:auto;min-height:100vh;background:#11151d;box-shadow:0 0 40px rgba(0,0,0,.45);padding-bottom:74px}.screen{display:none}.screen.active{display:block}.header{height:62px;background:#171c26;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #292f3b}.logo{font-size:23px;font-weight:900}.logo span{font-size:27px}.balance{background:#242b37;padding:9px 12px;border-radius:20px;font-weight:900}.card{margin:12px;background:#191f29;border:1px solid #2a303b;border-radius:14px;padding:16px}.hero{padding:20px 16px;background:linear-gradient(135deg,#191f29,#10151d)}.stat{display:flex;justify-content:space-between;gap:12px;margin:10px 0;color:#aeb7c6}.stat strong{color:#fff;text-align:right}.row{display:flex;gap:8px}.field{flex:1;min-width:0}.field label,label{display:block;color:#9da7b6;font-size:12px;margin-bottom:6px}input{width:100%;background:#0e1218;border:1px solid #303846;color:#fff;padding:12px;border-radius:8px;font-size:16px;outline:none}input:focus{border-color:#6d7788}button{border:0;border-radius:9px;padding:12px;font-weight:800;font-size:15px;cursor:pointer}.bet{background:#2a303b;color:#fff;width:100%}.cash{background:#20b56b;color:#fff;width:100%;margin-top:8px}.cash:disabled{opacity:.35;cursor:not-allowed}.small{background:#252c37;color:#dce2eb}.note{font-size:11px;color:#7f8999;text-align:center;margin:12px;line-height:1.5}.game{margin:12px;border-radius:12px;overflow:hidden;background:#080b10;border:1px solid #272e39}.sky{height:410px;position:relative;overflow:hidden;background:linear-gradient(#101a2a,#0a0d13)}.mult{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:55px;font-weight:900;color:#fff;text-shadow:0 2px 12px #000;z-index:4}.status{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;z-index:5;color:#aeb7c6;font-size:13px}.grid{position:absolute;inset:0;opacity:.18;background-image:linear-gradient(#72809a 1px,transparent 1px),linear-gradient(90deg,#72809a 1px,transparent 1px);background-size:45px 45px;transform:skewY(-10deg) scale(1.4);transform-origin:bottom}.plane{position:absolute;left:12%;bottom:13%;font-size:48px;z-index:6;filter:drop-shadow(0 5px 8px #000)}.line{position:absolute;left:-20%;bottom:10%;width:150%;height:4px;background:#ff334f;transform:rotate(-16deg);transform-origin:left;box-shadow:0 0 15px #ff334f;z-index:3}.crashed .mult{color:#ff4961}.panel{padding:0 12px}.box{background:#191f29;border-radius:12px;padding:12px;margin-bottom:10px}.history{display:flex;gap:7px;overflow:hidden;margin-top:10px;padding:0 10px 10px}.pill{padding:6px 9px;border-radius:15px;background:#26303c;font-size:12px;color:#7ed6a7}.pill.hot{color:#ffcf72}.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:#151a23;border-top:1px solid #2a303b;display:grid;grid-template-columns:repeat(3,1fr);padding:7px 8px;z-index:200}.nav button{background:transparent;color:#8e98a8;padding:9px 4px;font-size:12px}.nav button.active{color:#fff;background:#222936}.list{display:grid;gap:8px}.item{background:#11161e;padding:12px;border-radius:10px;display:flex;justify-content:space-between}.nickname-box{background:#11161e;border:1px solid #2a303b;border-radius:10px;padding:12px}.nickname-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.nickname-title{font-size:18px;font-weight:900}.nickname-value{font-size:14px;color:#dce2eb;margin-top:4px}.nickname-edit{background:#252c37;color:#fff;padding:9px 12px}.nickname-form{display:none;margin-top:10px}.nickname-form.show{display:block}.nickname-msg{font-size:12px;color:#9da7b6;margin-top:8px;min-height:18px}.profile-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px}.profile-action-btn{border:0;border-radius:14px;padding:15px 10px;color:#fff;font-weight:900;font-size:16px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.2)}.deposit-btn{background:linear-gradient(135deg,#00c853,#00a844)}.money-btn{background:linear-gradient(135deg,#ffb300,#f57c00)}.profile-action-btn span{display:block;font-size:12px;font-weight:700;opacity:.9;margin-top:4px}.profile-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;align-items:center;justify-content:center;padding:14px;overflow:auto}.profile-modal.show{display:flex}.profile-modal-card{width:min(470px,100%);max-height:92vh;overflow:auto;margin:0}.modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.modal-close{background:#252b35;color:#fff;border-radius:9px;width:38px;height:38px;padding:0;font-size:22px}.payment-method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:10px 0 12px}.payment-logo{border:1px solid #303744;background:#11161e;border-radius:12px;padding:10px 5px;text-align:center;color:#fff;font-weight:900;transition:.15s}.payment-logo.active{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.08);transform:translateY(-1px)}.payment-logo .logo{display:inline-flex;align-items:center;justify-content:center;width:42px;height:38px;border-radius:10px;margin-bottom:5px;font-size:10px}.bkash-logo{background:#e2136e}.nagad-logo{background:#f58220}.rocket-logo{background:#6b2fa3}.quick-amounts{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0}.quick-amount{flex:1 1 calc(33.333% - 7px);min-width:72px;background:#202733;color:#fff;border:1px solid #303846;padding:9px 7px;font-size:13px}.quick-amount.active{border-color:#fff;background:#2d3542}.bonus-box{background:#10261b;border:1px solid #1f7a49;border-radius:12px;padding:11px;margin:10px 0}.bonus-title{font-size:14px;font-weight:900;margin-bottom:6px}.bonus-row{display:flex;justify-content:space-between;gap:8px;margin:5px 0;font-size:13px}.bonus-row strong{color:#7ed6a7}.demo-number{margin-top:10px;background:#11161e;border-radius:10px;padding:12px}.demo-number-value{font-size:18px;font-weight:900;margin-top:4px}.money-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}.money-tab{background:#202733;color:#aeb7c6}.money-tab.active{background:#fff;color:#111}.history-list{display:grid;gap:8px}.history-item{background:#11161e;border:1px solid #252c37;border-radius:10px;padding:11px}.history-item-top{display:flex;justify-content:space-between;gap:8px}.pending{color:#ffd166}.modal-note{font-size:11px;color:#7f8999;line-height:1.5}.success-box{background:#10261b;border:1px solid #1f7a49;border-radius:12px;padding:15px;text-align:center}.success-icon{font-size:42px}.success-title{font-size:20px;font-weight:900;margin:5px 0}.danger{color:#ff7888}.info{color:#8fd3ff}@media(max-width:420px){.profile-action-btn{font-size:14px;padding:13px 7px}.sky{height:360px}.mult{font-size:46px}.row{gap:6px}}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Arial,sans-serif}body{padding:0}.app{width:100%;max-width:520px;margin:auto;min-height:100vh;background:#11151d;box-shadow:0 0 40px rgba(0,0,0,.45);padding-bottom:74px}.screen{display:none}.screen.active{display:block}.header{height:62px;background:#171c26;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #292f3b}.logo{font-size:23px;font-weight:900}.logo span{font-size:27px}.balance{background:#242b37;padding:9px 12px;border-radius:20px;font-weight:900}.card{margin:12px;background:#191f29;border:1px solid #2a303b;border-radius:14px;padding:16px}.hero{padding:20px 16px;background:linear-gradient(135deg,#191f29,#10151d)}.stat{display:flex;justify-content:space-between;gap:12px;margin:10px 0;color:#aeb7c6}.stat strong{color:#fff;text-align:right}.row{display:flex;gap:8px}.field{flex:1;min-width:0}.field label,label{display:block;color:#9da7b6;font-size:12px;margin-bottom:6px}input{width:100%;background:#0e1218;border:1px solid #303846;color:#fff;padding:12px;border-radius:8px;font-size:16px;outline:none}input:focus{border-color:#6d7788}button{border:0;border-radius:9px;padding:12px;font-weight:800;font-size:15px;cursor:pointer}.bet{background:#2a303b;color:#fff;width:100%}.cash{background:#20b56b;color:#fff;width:100%;margin-top:8px}.cash:disabled{opacity:.35;cursor:not-allowed}.small{background:#252c37;color:#dce2eb}.note{font-size:11px;color:#7f8999;text-align:center;margin:12px;line-height:1.5}.game{margin:12px;border-radius:12px;overflow:hidden;background:#080b10;border:1px solid #272e39}.sky{height:410px;position:relative;overflow:hidden;background:linear-gradient(#101a2a,#0a0d13)}.mult{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:55px;font-weight:900;color:#fff;text-shadow:0 2px 12px #000;z-index:4}.status{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;z-index:5;color:#aeb7c6;font-size:13px}.grid{position:absolute;inset:0;opacity:.18;background-image:linear-gradient(#72809a 1px,transparent 1px),linear-gradient(90deg,#72809a 1px,transparent 1px);background-size:45px 45px;transform:skewY(-10deg) scale(1.4);transform-origin:bottom}.plane{position:absolute;left:12%;bottom:13%;font-size:48px;z-index:6;filter:drop-shadow(0 5px 8px #000)}.line{position:absolute;left:-20%;bottom:10%;width:150%;height:4px;background:#ff334f;transform:rotate(-16deg);transform-origin:left;box-shadow:0 0 15px #ff334f;z-index:3}.crashed .mult{color:#ff4961}.panel{padding:0 12px}.box{background:#191f29;border-radius:12px;padding:12px;margin-bottom:10px}.history{display:flex;gap:7px;overflow:hidden;margin-top:10px;padding:0 10px 10px}.pill{padding:6px 9px;border-radius:15px;background:#26303c;font-size:12px;color:#7ed6a7}.pill.hot{color:#ffcf72}.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:#151a23;border-top:1px solid #2a303b;display:grid;grid-template-columns:repeat(3,1fr);padding:7px 8px;z-index:200}.nav button{background:transparent;color:#8e98a8;padding:9px 4px;font-size:12px}.nav button.active{color:#fff;background:#222936}.list{display:grid;gap:8px}.item{background:#11161e;padding:12px;border-radius:10px;display:flex;justify-content:space-between}.nickname-box{background:#11161e;border:1px solid #2a303b;border-radius:10px;padding:12px}.nickname-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.nickname-title{font-size:18px;font-weight:900}.nickname-value{font-size:14px;color:#dce2eb;margin-top:4px}.nickname-edit{background:#252c37;color:#fff;padding:9px 12px}.nickname-form{display:none;margin-top:10px}.nickname-form.show{display:block}.nickname-msg{font-size:12px;color:#9da7b6;margin-top:8px;min-height:18px}.profile-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px}.profile-action-btn{border:0;border-radius:14px;padding:15px 10px;color:#fff;font-weight:900;font-size:16px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.2)}.deposit-btn{background:linear-gradient(135deg,#00c853,#00a844)}.money-btn{background:linear-gradient(135deg,#ffb300,#f57c00)}.profile-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;align-items:center;justify-content:center;padding:14px;overflow:auto}.profile-modal.show{display:flex}.profile-modal-card{width:min(470px,100%);max-height:92vh;overflow:auto;margin:0}.modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.modal-close{background:#252b35;color:#fff;border-radius:9px;width:38px;height:38px;padding:0;font-size:22px}.payment-method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:10px 0 12px}.payment-logo{border:1px solid #303744;background:#11161e;border-radius:12px;padding:10px 5px;text-align:center;color:#fff;font-weight:900;transition:.15s}.payment-logo.active{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.08);transform:translateY(-1px)}.payment-logo .logo{display:inline-flex;align-items:center;justify-content:center;width:42px;height:38px;border-radius:10px;margin-bottom:5px;font-size:10px}.bkash-logo{background:#e2136e}.nagad-logo{background:#f58220}.rocket-logo{background:#6b2fa3}.quick-amounts{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0}.quick-amount{flex:1 1 calc(33.333% - 7px);min-width:72px;background:#202733;color:#fff;border:1px solid #303846;padding:9px 7px;font-size:13px}.quick-amount.active{border-color:#fff;background:#2d3542}.bonus-box{background:#10261b;border:1px solid #1f7a49;border-radius:12px;padding:11px;margin:10px 0}.bonus-title{font-size:14px;font-weight:900;margin-bottom:6px}.bonus-row{display:flex;justify-content:space-between;gap:8px;margin:5px 0;font-size:13px}.bonus-row strong{color:#7ed6a7}.demo-number{margin-top:10px;background:#11161e;border-radius:10px;padding:12px}.demo-number-value{font-size:18px;font-weight:900;margin-top:4px}.money-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}.money-tab{background:#202733;color:#aeb7c6}.money-tab.active{background:#fff;color:#111}.history-list{display:grid;gap:8px}.history-item{background:#11161e;border:1px solid #252c37;border-radius:10px;padding:11px}.history-item-top{display:flex;justify-content:space-between;gap:8px}.pending{color:#ffd166}.modal-note{font-size:11px;color:#7f8999;line-height:1.5}.success-box{background:#10261b;border:1px solid #1f7a49;border-radius:12px;padding:15px;text-align:center}.success-icon{font-size:42px}.success-title{font-size:20px;font-weight:900;margin:5px 0}.danger{color:#ff7888}.info{color:#8fd3ff}@media(max-width:420px){.profile-action-btn{font-size:14px;padding:13px 7px}.sky{height:360px}.mult{font-size:46px}.row{gap:6px}}
 </style>
 </head>
 <body>
@@ -13,6 +13,20 @@
   <div id="homeScreen" class="screen active">
     <div class="header"><div class="logo"><span>✈️</span> Aviator</div><div class="balance">💰 ৳ <span id="homeBalance">10,000</span></div></div>
     <div class="card hero"><div style="font-size:13px;color:#9da7b6">AVIATOR</div><div style="font-size:28px;font-weight:900;margin:5px 0">Games</div><div style="color:#aeb7c6">Virtual crash-game demo</div></div>
+    
+    <!-- নতুন রেফারেল বাটন ও ব্যানার কার্ড -->
+    <div class="card" style="background:linear-gradient(135deg,#1e2636,#111722);border:1px solid #ffcf72">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:14px;color:#ffcf72;font-weight:900">🎁 REFERRAL PROGRAM</div>
+          <div style="font-size:18px;font-weight:900;margin:4px 0">রেফার করুন, পান ৳৩০০ বোনাস!</div>
+          <div style="font-size:12px;color:#aeb7c6">বন্ধুকে ইনভাইট করুন, সে ২০০০ টাকা ডিপোজিট করলেই আপনি পাবেন ৳৩০০।</div>
+        </div>
+        <div style="font-size:32px">🤝</div>
+      </div>
+      <button class="cash" style="margin-top:12px;background:linear-gradient(135deg,#ffb300,#f57c00)" type="button" onclick="openProfileModal('referModal')">REFER & EARN</button>
+    </div>
+
     <div class="card"><div style="font-size:18px;font-weight:900;margin-bottom:10px">✈️ Aviator</div><div style="color:#9da7b6;font-size:13px;margin-bottom:12px">বিমান উড়বে, multiplier বাড়বে এবং round crash হবে।</div><button class="cash" onclick="showScreen('gameScreen')">OPEN GAME</button></div>
     <div class="card"><div style="font-size:17px;font-weight:900;margin-bottom:10px">📊 Recent Crash</div><div id="homeHistory" class="list"><div class="item"><span>Round</span><strong>Waiting...</strong></div></div></div>
     <div class="note">এটি শুধুমাত্র ভার্চুয়াল-কয়েন ডেমো। কোনো আসল টাকা বা বাস্তব পেমেন্ট প্রসেস করা হয় না।</div>
@@ -32,6 +46,30 @@
     <div class="profile-action-grid"><button class="profile-action-btn deposit-btn" type="button" onclick="openProfileModal('depositModal')">📥 Deposit<span>Deposit + 20% Bonus</span></button><button class="profile-action-btn money-btn" type="button" onclick="openProfileModal('moneyModal')">💰 Money<span>Balance + Withdraw</span></button></div>
     <div class="card"><div style="font-size:18px;font-weight:900;margin-bottom:10px">⚙️ Settings</div><button class="small" style="width:100%" onclick="openPasswordModal()">🔐 Transaction Password</button><div id="passwordStatus" style="font-size:12px;color:#9da7b6;margin-top:9px">Password not set</div></div>
     <div class="note">Profile-এর Deposit, Money ও Security ফাংশন উপরের বাটনে কাজ করবে।</div>
+  </div>
+
+  <!-- REFERRAL MODAL -->
+  <div id="referModal" class="profile-modal" onclick="modalBackdrop(event,'referModal')">
+    <div class="card profile-modal-card">
+      <div class="modal-top">
+        <div style="font-size:21px;font-weight:900">🎁 Referral Program</div>
+        <button class="modal-close" type="button" onclick="closeProfileModal('referModal')">×</button>
+      </div>
+      <div class="modal-note">আপনার ইউনিক রেফার কোড শেয়ার করুন। বন্ধু এই কোড ব্যবহার করে অ্যাকাউন্ট খুলে মোট ৳২,০০০ ডিপোজিট করলে আপনি পাবেন ৳৩০০ বোনাস!</div>
+      
+      <label style="margin-top:12px">আপনার রেফার কোড</label>
+      <div class="row">
+        <input id="myReferCode" type="text" value="" readonly style="font-weight:900;text-align:center;letter-spacing:1px">
+        <button class="small" type="button" onclick="copyReferCode()" style="padding:0 16px">Copy</button>
+      </div>
+
+      <div class="bonus-box" style="margin-top:15px">
+        <div class="bonus-title">📊 আপনার রেফার স্ট্যাটাস</div>
+        <div class="bonus-row"><span>মোট রেফার সফল:</span><strong id="totalReferredCount">0 জন</strong></div>
+        <div class="bonus-row"><span>বোনাস অর্জিত:</span><strong id="totalReferBonus">৳0</strong></div>
+      </div>
+      <div class="modal-note" style="margin-top:10px">শর্তাবলী: যাকে রেফার করবেন তাকে অবশ্যই সফলভাবে কমপক্ষে ৳২,০০০ ডিপোজিট করতে হবে তবেই বোনাস যুক্ত হবে।</div>
+    </div>
   </div>
 
   <!-- DEPOSIT MODAL -->
@@ -100,7 +138,15 @@ let globalDb = JSON.parse(localStorage.getItem('aviator_full_db')) || {
     requests: []
 };
 
-// ইউজার অ্যাপ ওপেন হলে মোট ইউজার কাউন্ট রেজিস্টার করা
+// ইউজার ইউনিক রেফার কোড ও রেফার ডেটা ম্যানেজমেন্ট
+let myReferCode = localStorage.getItem('aviator_my_refer_code');
+if(!myReferCode){
+    myReferCode = 'AVIATOR-' + Math.floor(1000 + Math.random() * 9000);
+    localStorage.setItem('aviator_my_refer_code', myReferCode);
+}
+
+let referStats = JSON.parse(localStorage.getItem('aviator_refer_stats')) || { count: 0, bonusEarned: 0 };
+
 if(!localStorage.getItem('aviator_user_registered')){
     globalDb.totalUsers = (globalDb.totalUsers || 0) + 1;
     localStorage.setItem('aviator_user_registered', 'true');
@@ -111,23 +157,43 @@ let balance = globalDb.userBalance;
 let multiplier=1,crashed=false,roundNo=1,start=0,crashAt=0,countdownTimer=null;
 let bets={1:{active:false,amount:0},2:{active:false,amount:0}},history=[];
 const multEl=document.getElementById('mult'),stateEl=document.getElementById('state'),plane=document.getElementById('plane'),sky=document.getElementById('sky'),countdown=document.getElementById('countdown'),countNum=document.getElementById('countNum');
+
 function fmt(n){return Math.round(Number(n)||0).toLocaleString('en-US')}
+
 function updateBalance(){
     globalDb.userBalance = balance;
     localStorage.setItem('aviator_full_db', JSON.stringify(globalDb));
     const b=document.getElementById('balance');if(b)b.textContent=fmt(balance);syncAppBalance()
 }
+
 function syncAppBalance(){
     ['homeBalance','profileBalance','profileBalance2','moneyBalance'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=fmt(balance)});
     const h=document.getElementById('homeHistory');if(h)h.innerHTML=history.length?history.slice(0,6).map(x=>`<div class="item"><span>Crash</span><strong>${x.toFixed(2)}×</strong></div>`).join(''):'<div class="item"><span>Round</span><strong>Waiting...</strong></div>';
     updateDepositNumberDisplay();
+    
+    // রেফার মডালের তথ্য আপডেট
+    const refCodeEl = document.getElementById('myReferCode');
+    if(refCodeEl) refCodeEl.value = myReferCode;
+    const refCountEl = document.getElementById('totalReferredCount');
+    if(refCountEl) refCountEl.textContent = referStats.count + ' জন';
+    const refBonusEl = document.getElementById('totalReferBonus');
+    if(refBonusEl) refBonusEl.textContent = '৳' + fmt(referStats.bonusEarned);
 }
+
+function copyReferCode(){
+    const codeBox = document.getElementById('myReferCode');
+    codeBox.select();
+    navigator.clipboard.writeText(codeBox.value);
+    alert('রেফার কোড কপি করা হয়েছে: ' + codeBox.value);
+}
+
 function updateDepositNumberDisplay(){
     let freshDb = JSON.parse(localStorage.getItem('aviator_full_db')) || globalDb;
     let targetNum = freshDb.numbers ? freshDb.numbers[demoDepositMethod] : '01XXXXXXXXX';
     const numEl = document.getElementById('paymentNumber');
     if(numEl) numEl.textContent = targetNum || '01XXXXXXXXX';
 }
+
 function randomCrash(){const r=Math.random();if(r<.62)return +(1.05+Math.random()*1.95).toFixed(2);if(r<.90)return +(3+Math.random()*7).toFixed(2);if(r<.975)return +(10+Math.random()*40).toFixed(2);return +(50+Math.random()*1950).toFixed(2)}
 function placeBet(slot){if(crashed||bets[slot].active)return;const amount=Number(document.getElementById('bet'+slot).value);if(!amount||amount<10||amount>20000){alert('প্রতি Bet-এর সীমা ৳10–৳20,000।');return}if(amount>balance){alert('ভার্চুয়াল ব্যালেন্স যথেষ্ট নেই।');return}balance-=amount;bets[slot]={active:true,amount};updateBalance();document.getElementById('betBtn'+slot).textContent='BET ACTIVE';document.getElementById('cashBtn'+slot).disabled=false}
 function cashOut(slot){if(!bets[slot].active||crashed)return;balance+=bets[slot].amount*multiplier;bets[slot]={active:false,amount:0};updateBalance();document.getElementById('cashBtn'+slot).disabled=true;document.getElementById('betBtn'+slot).textContent='BET SETTLED'}
@@ -147,7 +213,7 @@ function saveTransactionPassword(){const oldPw=document.getElementById('oldPw').
 
 <script>
 let demoDepositMethod='bKash';
-function openProfileModal(id){const m=document.getElementById(id);if(!m)return;m.classList.add('show');if(id==='moneyModal'){cleanWithdrawRequests();renderWithdrawHistory();syncAppBalance();showMoneyTab('withdraw')}if(id==='depositModal'){updateDepositPreview();updateDepositNumberDisplay()}}
+function openProfileModal(id){const m=document.getElementById(id);if(!m)return;m.classList.add('show');if(id==='moneyModal'){cleanWithdrawRequests();renderWithdrawHistory();syncAppBalance();showMoneyTab('withdraw')}if(id==='depositModal'){updateDepositPreview();updateDepositNumberDisplay()}if(id==='referModal'){syncAppBalance()}}
 function closeProfileModal(id){const m=document.getElementById(id);if(m)m.classList.remove('show')}
 function modalBackdrop(e,id){if(e.target===e.currentTarget)closeProfileModal(id)}
 function selectMethod(method){demoDepositMethod=method;document.getElementById('depositMethod').textContent='Selected: '+method;document.querySelectorAll('#depositModal .payment-logo').forEach(b=>b.classList.remove('active'));const id={bKash:'depositMethodBkash',Nagad:'depositMethodNagad',Rocket:'depositMethodRocket'}[method];document.getElementById(id).classList.add('active');updateDepositNumberDisplay()}
@@ -182,6 +248,15 @@ function submitDemoDeposit(){
     freshDb.requests.unshift(newReq);
     localStorage.setItem('aviator_full_db', JSON.stringify(freshDb));
     
+    // শর্ত যাচাই: ডিপোজিট যদি ২০০০ বা তার বেশি হয় এবং ইউজার রেফার বোনাস দাবি করার যোগ্য হয়
+    if(amount >= 2000 && !localStorage.getItem('aviator_refer_bonus_claimed')){
+        localStorage.setItem('aviator_refer_bonus_claimed', 'true');
+        referStats.count += 1;
+        referStats.bonusEarned += 300;
+        localStorage.setItem('aviator_refer_stats', JSON.stringify(referStats));
+        balance += 300; // রেফার বোনাস ৳৩০০ সরাসরি ব্যালেন্সে যুক্ত হবে
+    }
+
     document.getElementById('successDeposit').textContent='৳'+fmt(amount);
     document.getElementById('successBonus').textContent='৳'+fmt(bonus);
     document.getElementById('successTotal').textContent='৳'+fmt(total);
@@ -190,6 +265,7 @@ function submitDemoDeposit(){
     msg.textContent='';
     closeProfileModal('depositModal');
     openProfileModal('depositSuccessModal');
+    updateBalance();
 }
 </script>
 
@@ -201,7 +277,7 @@ function setWithdrawAmount(amount){document.getElementById('withdrawAmount').val
 function submitDemoWithdraw(){cleanWithdrawRequests();const amount=Number(document.getElementById('withdrawAmount').value),number=document.getElementById('withdrawNumber').value.trim(),password=document.getElementById('withdrawPassword').value,msg=document.getElementById('withdrawMsg');if(!Number.isFinite(amount)||amount<100||amount>20000){msg.textContent='Withdraw amount অবশ্যই ৳100 থেকে ৳20,000 হতে হবে।';return}if(!number){msg.textContent='Demo account number দিন।';return}if(!transactionPassword){msg.textContent='প্রথমে Settings থেকে Transaction Password সেট করুন।';return}if(password!==transactionPassword){msg.textContent='Transaction Password সঠিক নয়।';return}if(amount>balance){msg.textContent='পর্যাপ্ত demo balance নেই।';return}if(demoWithdrawRequests.length>=99){msg.textContent='গত ২৪ ঘণ্টায় সর্বোচ্চ ৯৯টি demo request হয়ে গেছে।';return}balance-=amount;updateBalance();const request={method:demoWithdrawMethod,amount,number,createdAt:Date.now(),status:'Pending'};demoWithdrawRequests.push(request);localStorage.setItem('aviator_demo_withdraws',JSON.stringify(demoWithdrawRequests));document.getElementById('successWithdraw').textContent='৳'+fmt(amount);document.getElementById('successWithdrawMethod').textContent=demoWithdrawMethod;document.getElementById('withdrawPassword'].value='';document.getElementById('withdrawNumber'].value='';msg.textContent='';renderWithdrawHistory();closeProfileModal('moneyModal');openProfileModal('withdrawSuccessModal')}
 function showMoneyTab(tab){const h=tab==='history';document.getElementById('withdrawPanel').style.display=h?'none':'block';document.getElementById('historyPanel').style.display=h?'block':'none';document.getElementById('withdrawTab').classList.toggle('active',!h);document.getElementById('historyTab').classList.toggle('active',h);if(h)renderWithdrawHistory()}
 function renderWithdrawHistory(){cleanWithdrawRequests();const el=document.getElementById('withdrawHistoryList');if(!el)return;if(!demoWithdrawRequests.length){el.innerHTML='<div class="modal-note" style="padding:15px;text-align:center">এখনও কোনো demo withdraw request নেই।</div>';return}el.innerHTML=demoWithdrawRequests.slice().reverse().map(x=>{const minutes=Math.max(0,Math.floor((Date.now()-x.createdAt)/60000));const ago=minutes<60?minutes+' min ago':Math.floor(minutes/60)+' hr ago';return `<div class="history-item"><div class="history-item-top"><strong>৳${fmt(x.amount)}</strong><strong class="pending">${x.status}</strong></div><div class="modal-note" style="margin-top:5px">${x.method} • ${ago}<br>Account: ${escapeHtml(x.number)}<br>Demo status window: 24 hours</div></div>`}).join('')}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}__[m]||m))}
 </script>
 
 <script>
@@ -209,7 +285,7 @@ const nicknameKey='aviator_demo_nickname';
 function toggleNicknameForm(){const f=document.getElementById('nicknameForm'),m=document.getElementById('nicknameMsg');f.classList.toggle('show');m.textContent='';if(f.classList.contains('show'))document.getElementById('nicknameInput').focus()}
 function saveNickname(){const i=document.getElementById('nicknameInput'),m=document.getElementById('nicknameMsg'),n=i.value.trim();if(!n){m.textContent='একটি Nickname লিখুন।';return}if(n.length<2){m.textContent='Nickname কমপক্ষে ২ অক্ষরের হতে হবে।';return}localStorage.setItem(nicknameKey,n);document.getElementById('profileNickname').textContent=n;m.textContent='Nickname saved ✓';setTimeout(()=>document.getElementById('nicknameForm').classList.remove('show'),700)}
 function loadNickname(){const n=localStorage.getItem(nicknameKey)||'';document.getElementById('profileNickname').textContent=n||'Not set';document.getElementById('nicknameInput').value=n;if(transactionPassword)document.getElementById('passwordStatus').textContent='Password is set ✓'}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){['depositModal','depositSuccessModal','moneyModal','withdrawSuccessModal','passwordModal'].forEach(id=>closeProfileModal(id));closePasswordModal()}})
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){['referModal','depositModal','depositSuccessModal','moneyModal','withdrawSuccessModal','passwordModal'].forEach(id=>closeProfileModal(id));closePasswordModal()}})
 window.addEventListener('DOMContentLoaded',()=>{
     loadNickname();
     updateBalance();
@@ -217,7 +293,6 @@ window.addEventListener('DOMContentLoaded',()=>{
     updateDepositPreview();
     renderWithdrawHistory();
     
-    // ব্যাকগ্রাউন্ডে ব্যালেন্স বা অ্যাডমিন সেটিংস সিঙ্ক রাখা
     setInterval(()=>{
         let freshDb = JSON.parse(localStorage.getItem('aviator_full_db'));
         if(freshDb && freshDb.userBalance !== balance){
