@@ -91,6 +91,12 @@
       <button class="cash" style="margin-top:12px;background:linear-gradient(135deg,#ffb300,#f57c00)" type="button" onclick="openProfileModal('referModal')">REFER & EARN</button>
     </div>
 
+    <!-- এডমিন প্যানেল থেকে আপলোড করা গেমগুলো দেখানোর ডাইনামিক সেকশন -->
+    <div class="card" id="adminGameSection" style="display:none;">
+      <div style="font-size:18px;font-weight:900;margin-bottom:10px">🎮 Admin Games</div>
+      <div id="userGameContainer" class="list"></div>
+    </div>
+
     <div class="card"><div style="font-size:18px;font-weight:900;margin-bottom:10px">✈️ Aviator</div><div style="color:#9da7b6;font-size:13px;margin-bottom:12px">বিমান উড়বে, multiplier বাড়বে এবং round crash হবে।</div><button class="cash" onclick="showScreen('gameScreen')">OPEN GAME</button></div>
     <div class="card"><div style="font-size:17px;font-weight:900;margin-bottom:10px">📊 Recent Crash</div><div id="homeHistory" class="list"><div class="item"><span>Round</span><strong>Waiting...</strong></div></div></div>
   </div>
@@ -226,7 +232,7 @@
   <div class="nav"><button id="navHome" class="active" onclick="showScreen('homeScreen')">⌂<br>Home</button><button id="navGame" onclick="showScreen('gameScreen')">✈️<br>Game</button><button id="navProfile" onclick="showScreen('profileScreen')">👤<br>Profile</button></div>
 </div>
 
-<!-- Firebase SDK (Modular CDN) & Real-time Numbers Listener -->
+<!-- Firebase SDK (Modular CDN) & Real-time Numbers & Games Listener -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -260,6 +266,40 @@
       if (snapshot.exists()) {
           window.adminLiveNumbers = snapshot.val();
           updateDepositNumberDisplay();
+      }
+  });
+
+  // রিয়েল-টাইমে এডমিন প্যানেল থেকে গেম লোড করার ফাংশন
+  onValue(ref(db, 'games'), (snapshot) => {
+      const container = document.getElementById('userGameContainer');
+      const section = document.getElementById('adminGameSection');
+      if(!container || !section) return;
+      container.innerHTML = '';
+      const data = snapshot.val();
+      
+      if(data) {
+          let hasActive = false;
+          Object.keys(data).forEach(key => {
+              const game = data[key];
+              if(game.status === 'active') {
+                  hasActive = true;
+                  container.innerHTML += `
+                      <div class="item" style="align-items:center; cursor:pointer;" onclick="location.href='${game.link || '#'}'">
+                          <div style="display:flex; align-items:center; gap:10px;">
+                              <img src="${game.image || ''}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;" onerror="this.style.display='none'">
+                              <div>
+                                  <strong style="font-size:15px; color:#fff;">${game.name}</strong>
+                                  <div style="font-size:11px; color:#9da7b6;">Click to play</div>
+                              </div>
+                          </div>
+                          <button class="small" style="padding:6px 12px;">PLAY</button>
+                      </div>
+                  `;
+              }
+          });
+          section.style.display = hasActive ? 'block' : 'none';
+      } else {
+          section.style.display = 'none';
       }
   });
 </script>
@@ -546,7 +586,7 @@ function modalBackdrop(e,id){if(e.target===e.currentTarget)closeProfileModal(id)
 function selectMethod(method){demoDepositMethod=method;document.getElementById('depositMethod').textContent='Selected: '+method;document.querySelectorAll('#depositModal .payment-logo').forEach(b=>b.classList.remove('active'));const id={bKash:'depositMethodBkash',Nagad:'depositMethodNagad',Rocket:'depositMethodRocket'}[method];document.getElementById(id).classList.add('active');updateDepositNumberDisplay()}
 function updateDepositPreview(){const amount=Math.max(0,Number(document.getElementById('depositAmount').value)||0),bonus=Math.round(amount*.20);document.getElementById('depositPreview').textContent='৳'+fmt(amount);document.getElementById('depositBonusPreview').textContent='৳'+fmt(bonus);document.getElementById('depositTotalPreview').textContent='৳'+fmt(amount+bonus)}
 function clearQuickDepositActive(){document.querySelectorAll('#depositModal .quick-amount').forEach(b=>b.classList.remove('active'))}
-function setDepositAmount(amount){document.getElementById('depositAmount').value=amount;updateDepositPreview();document.querySelectorAll('#depositModal .quick-amount').forEach(b=>b.classList.toggle('active',b.textContent.replace(/[^0-9]/g,'')===String(amount)))}
+function setDepositAmount(amount){document.getElementById('depositAmount').value=amount;updateDepositPreview();document.querySelectorAll('#depositModal .quick-amount').forEach(b=>b.classList.toggle('active',b.textContent.replace(/[^0-9]/g,')===String(amount)))}
 
 function submitDemoDeposit(){
     const amount=Number(document.getElementById('depositAmount').value);
