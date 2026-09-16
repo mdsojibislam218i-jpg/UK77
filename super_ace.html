@@ -413,15 +413,47 @@
 
         const rows = 4;
         const cols = 5;
-        let balance = 0.00;
         let currentBetIndex = 2;
         let isSpinning = false;
         let freeSpins = 0;
 
         const betSteps = [0.50, 1.00, 2.00, 5.00, 10.00, 20.00, 50.00, 100.00, 200.00];
 
+        // ডাটাবেজ (aviator_users_db এবং aviator_current_user) থেকে ব্যালেন্স সিঙ্ক ও ম্যানেজ করার ফাংশন
+        function getCurrentUserBalance() {
+            try {
+                const currentUserKey = localStorage.getItem('aviator_current_user');
+                if (!currentUserKey) return 0.00;
+
+                let usersDb = JSON.parse(localStorage.getItem('aviator_users_db')) || {};
+                if (usersDb[currentUserKey] !== undefined) {
+                    return parseFloat(usersDb[currentUserKey].balance) || 0.00;
+                }
+            } catch (e) {
+                console.error("Database sync error:", e);
+            }
+            return 0.00;
+        }
+
+        function updateDatabaseBalance(newBalance) {
+            try {
+                const currentUserKey = localStorage.getItem('aviator_current_user');
+                if (!currentUserKey) return;
+
+                let usersDb = JSON.parse(localStorage.getItem('aviator_users_db')) || {};
+                if (usersDb[currentUserKey]) {
+                    usersDb[currentUserKey].balance = parseFloat(newBalance.toFixed(2));
+                    localStorage.setItem('aviator_users_db', JSON.stringify(usersDb));
+                }
+            } catch (e) {
+                console.error("Database update error:", e);
+            }
+        }
+
+        // পেজ লোড হওয়ার সাথে সাথে ডাটাবেজ থেকে ব্যালেন্স নিয়ে ইউআই আপডেট করা
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('balance').textContent = balance.toFixed(2);
+            const initialBalance = getCurrentUserBalance();
+            document.getElementById('balance').textContent = initialBalance.toFixed(2);
         });
 
         function checkHourlyScatter() {
@@ -479,20 +511,22 @@
         function spinGame() {
             if (isSpinning) return;
             
+            let currentBalance = getCurrentUserBalance();
             let currentBet = betSteps[currentBetIndex];
 
             if (freeSpins > 0) {
                 freeSpins--;
             } else {
-                if (balance < currentBet) {
+                if (currentBalance < currentBet) {
                     alert('অপর্যাপ্ত ব্যালেন্স বা কয়েন! দয়া করে ডিপোজিট বা ব্যালেন্স যোগ করুন।');
                     return;
                 }
-                balance -= currentBet;
+                currentBalance -= currentBet;
+                updateDatabaseBalance(currentBalance);
             }
 
             isSpinning = true;
-            document.getElementById('balance').textContent = balance.toFixed(2);
+            document.getElementById('balance').textContent = currentBalance.toFixed(2);
             
             if (freeSpins > 0) {
                 document.getElementById('statusText').textContent = `FREE SPINS: ${freeSpins + 1}`;
@@ -545,14 +579,17 @@
         function checkWin(currentBet) {
             const win = Math.random() > 0.45; 
             const statusText = document.getElementById('statusText');
+            let currentBalance = getCurrentUserBalance();
             
             if (win) {
                 const tinyMultipliers = [0.3, 0.5, 0.8, 1.0, 1.2];
                 const selectedMultiplier = tinyMultipliers[Math.floor(Math.random() * tinyMultipliers.length)];
                 const winAmt = currentBet * selectedMultiplier;
 
-                balance += winAmt;
-                document.getElementById('balance').textContent = balance.toFixed(2);
+                currentBalance += winAmt;
+                updateDatabaseBalance(currentBalance);
+
+                document.getElementById('balance').textContent = currentBalance.toFixed(2);
                 statusText.textContent = `WIN! +${winAmt.toFixed(2)}`;
                 statusText.style.color = '#ffd700';
                 
