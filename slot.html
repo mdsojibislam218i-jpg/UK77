@@ -275,7 +275,7 @@
 
     <!-- Status Bar -->
     <div class="status-bar" id="statusBarText">
-        💡 আপনার ব্যালেন্স ০.০০ ৳। অনুগ্রহ করে ডিপোজিট করে খেলুন!
+        💡 গেমটি শুরু করতে SPIN বাটনে ক্লিক করুন!
     </div>
 
     <!-- Bottom Control Panel -->
@@ -306,27 +306,27 @@
     </div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDAJGU2sNTdx0sL7pqAaZX7sKRM0LrgYwU",
-      authDomain: "uk77-56f6d.firebaseapp.com",
-      databaseURL: "https://uk77-56f6d-default-rtdb.firebaseio.com",
-      projectId: "uk77-56f6d",
-      storageBucket: "uk77-56f6d.firebasestorage.app",
-      messagingSenderId: "1062783431056",
-      appId: "1:1062783431056:web:c44fd51195cf4061998315",
-      measurementId: "G-C0ST13Q8PJ"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-</script>
-
 <script>
-    let userWallet = 0.00;
+    // --- মূল প্রোফাইল এবং অ্যাপের ডাটাবেজের সাথে ব্যালেন্স সিঙ্ক করার লজিক ---[cite: 5]
+    let usersDb = JSON.parse(localStorage.getItem('aviator_users_db')) || {};
+    let currentUserPhone = localStorage.getItem('aviator_current_user') || null;
+
+    function getUserBalance() {
+        if (currentUserPhone && usersDb[currentUserPhone]) {
+            return Number(usersDb[currentUserPhone].balance) || 0;
+        }
+        return 0;
+    }
+
+    function updateUserBalance(newBalance) {
+        if (currentUserPhone && usersDb[currentUserPhone]) {
+            usersDb[currentUserPhone].balance = newBalance;
+            localStorage.setItem('aviator_users_db', JSON.stringify(usersDb));
+        }
+    }
+
+    let userWallet = getUserBalance();
+
     let currentBet = 10.00;
     let isGameRunning = false;
     let soundEnabled = true;
@@ -400,6 +400,8 @@
     let boardState = [];
 
     window.addEventListener('DOMContentLoaded', () => {
+        userWallet = getUserBalance();
+        document.getElementById('txtBalance').innerText = userWallet.toFixed(2);
         initializeBoard();
     });
 
@@ -470,6 +472,7 @@
         if (isGameRunning) return;
 
         spinCounter++;
+        userWallet = getUserBalance();
 
         let isFreeSpin = false;
         if (freeSpinsRemaining > 0) {
@@ -478,11 +481,13 @@
             document.getElementById('freeSpinBadge').innerText = `ফ্রি স্পিন: ${freeSpinsRemaining}`;
         } else {
             if (userWallet < currentBet) {
-                alert('পর্যাপ্ত ব্যালেন্স নেই! দয়া করে ডিপোজিট করুন।');
+                alert('পর্যাপ্ত ব্যালেন্স নেই!');
+                if (autoModeActive) stopAutoMode();
                 if (callback) callback();
                 return;
             }
             userWallet -= currentBet;
+            updateUserBalance(userWallet);
             document.getElementById('txtBalance').innerText = userWallet.toFixed(2);
         }
 
@@ -591,13 +596,14 @@
                     if (diamondCount > 0 || leafCount > 0) {
                         winText = `💡 কিছু ডায়মন্ড/পাতা আসলেও ৩টি মেলেনি। আবার চেষ্টা করুন!`;
                     } else {
-                        winText = isFreeSpin ? `🎁 ফ্রি স্পিন চলছে (${freeSpinsRemaining} বাকি)...` : `💡 খালি স্পিন। ডিপোজিট করে আবার চেষ্টা করুন!`;
+                        winText = isFreeSpin ? `🎁 ফ্রি স্পিন চলছে (${freeSpinsRemaining} বাকি)...` : `💡 খালি স্পিন, আবার চেষ্টা করুন!`;
                     }
                 }
             }
 
             if (winAmount > 0) {
-                userWallet += winAmount;
+                userWallet = getUserBalance() + winAmount;
+                updateUserBalance(userWallet);
                 document.getElementById('txtBalance').innerText = userWallet.toFixed(2);
                 document.getElementById('txtWin').innerText = winAmount.toFixed(2);
             }
