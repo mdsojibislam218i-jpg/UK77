@@ -100,10 +100,9 @@
             text-align: center;
             box-shadow: 0 0 60px rgba(255, 215, 0, 0.6), inset 0 0 30px rgba(255, 215, 0, 0.3);
             position: relative;
-            display: none; /* লোডিং শেষ হলে দেখা যাবে */
+            display: none;
         }
 
-        /* ভিআইপি কার্টুন ক্যারেক্টার ও হেডার */
         .header-area {
             display: flex;
             align-items: center;
@@ -183,7 +182,6 @@
             letter-spacing: 1px;
         }
 
-        /* গেম স্ক্রিন */
         .main-screen {
             margin-bottom: 12px;
             background: rgba(5, 0, 10, 0.95);
@@ -271,7 +269,6 @@
             transform: rotate(180deg);
         }
 
-        /* কন্ট্রোল প্যানেল */
         .controls {
             display: flex;
             flex-direction: column;
@@ -338,7 +335,6 @@
 </head>
 <body>
 
-    <!-- ১ থেকে ১০০% ভিআইপি লোডিং স্ক্রিন -->
     <div id="loadingScreen">
         <div class="loader-logo">👑</div>
         <div class="loader-title">Super Ace VIP Royal</div>
@@ -348,9 +344,7 @@
         <div class="loading-percentage" id="loadingText">LOADING 0%</div>
     </div>
 
-    <!-- মূল গেম ইন্টারফেস -->
     <div class="game-container" id="gameContainer">
-        <!-- ওপরের ভিআইপি কার্টুন ক্যারেক্টার ও হেডার -->
         <div class="header-area">
             <div class="live-dealer">
                 <div class="avatar-box">🧙‍♂️</div>
@@ -372,7 +366,6 @@
                 <span>STATUS: <strong id="statusText" style="color: #00ffcc;">READY</strong></span>
             </div>
 
-            <!-- বেট কন্ট্রোল (৫০ পয়সা থেকে ২০০ টাকা) -->
             <div class="bet-control">
                 <button class="ctrl-btn" onclick="changeBet(-1)">-</button>
                 <span>BET: <strong id="betAmount" style="color: #ff00ff;">1.00</strong> 🪙</span>
@@ -384,7 +377,6 @@
     </div>
 
     <script>
-        // ১০০% লোডিং অ্যানিমেশন স্ক্রিপ্ট
         let loadProgress = 0;
         const progressFill = document.getElementById('progressFill');
         const loadingText = document.getElementById('loadingText');
@@ -392,12 +384,11 @@
         const gameContainer = document.getElementById('gameContainer');
 
         const loadingInterval = setInterval(() => {
-            loadProgress += Math.floor(Math.random() * 4) + 2; // র‍্যান্ডম স্পিডে বাড়বে
+            loadProgress += Math.floor(Math.random() * 4) + 2;
             if (loadProgress >= 100) {
                 loadProgress = 100;
                 clearInterval(loadingInterval);
                 
-                // লোডিং শেষ হলে স্ক্রিন ফেডআউট করে গেম ওপেন করা
                 loadingText.textContent = "LOADING 100% - READY!";
                 setTimeout(() => {
                     loadingScreen.style.opacity = '0';
@@ -422,12 +413,16 @@
 
         const rows = 4;
         const cols = 5;
-        let balance = 0.00; // ব্যালেন্স জিরো করা হয়েছে
-        let currentBetIndex = 2; // ডিফলท์ ১ টাকা
+        let balance = 0.00;
+        let currentBetIndex = 2;
         let isSpinning = false;
         let freeSpins = 0;
 
         const betSteps = [0.50, 1.00, 2.00, 5.00, 10.00, 20.00, 50.00, 100.00, 200.00];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('balance').textContent = balance.toFixed(2);
+        });
 
         function checkHourlyScatter() {
             const lastScatterTime = localStorage.getItem('last_scatter_time');
@@ -490,7 +485,7 @@
                 freeSpins--;
             } else {
                 if (balance < currentBet) {
-                    alert('অপর্যাপ্ত ব্যালেন্স বা কয়েন!');
+                    alert('অপর্যাপ্ত ব্যালেন্স বা কয়েন! দয়া করে ডিপোজিট বা ব্যালেন্স যোগ করুন।');
                     return;
                 }
                 balance -= currentBet;
