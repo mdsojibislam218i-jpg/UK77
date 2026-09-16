@@ -449,7 +449,7 @@
         const loadingScreen = document.getElementById('loadingScreen');
 
         let loadingInterval = setInterval(() => {
-            currentPercent += Math.floor(Math.random() * 5) + 2; // র‍্যান্ডম গতিতে বাড়াবে
+            currentPercent += Math.floor(Math.random() * 5) + 2; 
             if (currentPercent >= 100) {
                 currentPercent = 100;
                 clearInterval(loadingInterval);
@@ -465,13 +465,37 @@
             loadingPercent.innerText = currentPercent + '%';
         }, 40);
 
-        let balance = 0.00;
+        // --- মূল প্রোফাইল এবং অ্যাপের সাথে ব্যালেন্স সিঙ্ক করার লজিক ---
+        let usersDb = JSON.parse(localStorage.getItem('aviator_users_db')) || {};
+        let currentUserPhone = localStorage.getItem('aviator_current_user') || null;
+
+        function getUserBalance() {
+            if (currentUserPhone && usersDb[currentUserPhone]) {
+                return Number(usersDb[currentUserPhone].balance) || 0;
+            }
+            return 0;
+        }
+
+        function updateUserBalance(newBalance) {
+            if (currentUserPhone && usersDb[currentUserPhone]) {
+                usersDb[currentUserPhone].balance = newBalance;
+                localStorage.setItem('aviator_users_db', JSON.stringify(usersDb));
+            }
+        }
+
+        let balance = getUserBalance();
         let totalBet = 2.40;
         let freeSpinsLeft = 0;
         const multiplierSteps = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 1536];
 
+        window.addEventListener('DOMContentLoaded', () => {
+            balance = getUserBalance();
+            document.getElementById('balanceDisp').innerText = balance.toFixed(2);
+        });
+
         function syncWithFirebase(newBalance) {
-            console.log("Firebase synced balance:", newBalance);
+            updateUserBalance(newBalance);
+            console.log("Synced balance with profile:", newBalance);
         }
 
         function openBuyModal() {
