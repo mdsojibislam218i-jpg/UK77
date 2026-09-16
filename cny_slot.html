@@ -193,28 +193,17 @@
         }
         .feature-buttons-row {
             display: flex;
-            gap: 10px;
+            justify-content: center;
             margin-top: 5px;
         }
         .buy-feature-pill {
             background: linear-gradient(to bottom, #32cd32, #006400);
             color: #fff;
             border: 2px solid #ffdf00;
-            padding: 4px 12px;
+            padding: 6px 20px;
             border-radius: 15px;
             font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.6);
-        }
-        .deposit-pill {
-            background: linear-gradient(to bottom, #1e90ff, #00008b);
-            color: #fff;
-            border: 2px solid #ffdf00;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             box-shadow: 0 3px 6px rgba(0,0,0,0.6);
         }
@@ -333,17 +322,6 @@
             width: 100%;
             font-size: 15px;
         }
-        .deposit-input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            background: #111;
-            border: 2px solid #ffd700;
-            color: #fff;
-            border-radius: 5px;
-            font-size: 16px;
-            text-align: center;
-        }
         .close-modal {
             background: #444;
             color: #fff;
@@ -391,7 +369,6 @@
             </div>
             <div class="feature-buttons-row">
                 <div class="buy-feature-pill" onclick="openBuyModal()">Buy Feature</div>
-                <div class="deposit-pill" onclick="openDepositModal()">Deposit</div>
             </div>
         </div>
 
@@ -428,16 +405,6 @@
             <button class="buy-option" onclick="buyFreeSpins(100, 15)">১০০ টাকা - ১৫টি ফ্রি স্পিন</button>
             <br>
             <button class="close-modal" onclick="closeBuyModal()">বাতিল</button>
-        </div>
-    </div>
-
-    <div class="modal" id="depositModal">
-        <div class="modal-content">
-            <h3>💳 ডিপোজিট করুন</h3>
-            <input type="number" id="depositAmount" class="deposit-input" placeholder="টাকার পরিমাণ লিখুন" min="10">
-            <button class="buy-option" onclick="processDeposit()">ব্যালেন্সে যোগ করুন</button>
-            <br>
-            <button class="close-modal" onclick="closeDepositModal()">বাতিল</button>
         </div>
     </div>
 
@@ -495,7 +462,6 @@
 
         function syncWithFirebase(newBalance) {
             updateUserBalance(newBalance);
-            console.log("Synced balance with profile:", newBalance);
         }
 
         function openBuyModal() {
@@ -506,33 +472,9 @@
             document.getElementById('buyModal').style.display = 'none';
         }
 
-        function openDepositModal() {
-            document.getElementById('depositModal').style.display = 'flex';
-        }
-
-        function closeDepositModal() {
-            document.getElementById('depositModal').style.display = 'none';
-        }
-
-        function processDeposit() {
-            let amount = parseFloat(document.getElementById('depositAmount').value);
-            if (isNaN(amount) || amount <= 0) {
-                alert('সঠিক পরিমাণ টাকা লিখুন!');
-                return;
-            }
-
-            balance += amount;
-            document.getElementById('balanceDisp').innerText = balance.toFixed(2);
-            syncWithFirebase(balance);
-
-            alert(`সফলভাবে ${amount.toFixed(2)} টাকা ডিপোজিট হয়েছে!`);
-            document.getElementById('depositAmount').value = '';
-            closeDepositModal();
-        }
-
         function buyFreeSpins(cost, spinsCount) {
             if (balance < cost) {
-                alert('আপনার পর্যাপ্ত ব্যালেন্স নেই! আগে ডিপোজিট করুন।');
+                alert('আপনার পর্যাপ্ত ব্যালেন্স নেই!');
                 return;
             }
             balance -= cost;
@@ -559,10 +501,10 @@
             triggerSpinLogic(true);
         }
 
-        function triggerSpin() {
+[cite: 2, 3]        function triggerSpin() {
             if (freeSpinsLeft > 0) return;
             if (balance < totalBet) {
-                alert('পর্যাপ্ত ব্যালেন্স নেই! দয়া করে ডিপোজিট করুন।');
+                alert('পর্যাপ্ত ব্যালেন্স নেই!');
                 return;
             }
             balance -= totalBet;
@@ -577,7 +519,7 @@
 
             setTimeout(() => {
                 const symbolsList = ['10', 'J', 'Q', 'K', 'A', '🪙', '💰', '🥠'];
-                The reels = document.querySelectorAll('.reel');
+                const reels = document.querySelectorAll('.reel');
                 reels.forEach(reel => {
                     const syms = reel.querySelectorAll('.symbol');
                     syms.forEach(s => {
