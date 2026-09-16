@@ -10,6 +10,7 @@
 .auth-container{max-width:420px;margin:60px auto;padding:20px}.auth-card{background:#191f29;border:1px solid #2a303b;border-radius:16px;padding:24px}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;background:#11161e;padding:4px;border-radius:10px}.auth-tab{background:transparent;color:#9da7b6;padding:10px;border-radius:8px;font-weight:bold;cursor:pointer}.auth-tab.active{background:#202733;color:#fff}
 .loading-overlay{display:none;position:fixed;inset:0;background:rgba(8,10,15,0.85);z-index:999;align-items:center;justify-content:center;flex-direction:column}.loading-overlay.show{display:flex}.spinner{width:50px;height:50px;border:4px solid #303846;border-top-color:#20b56b;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:15px}@keyframes spin{to{transform:rotate(360deg)}}.loading-text{font-size:16px;font-weight:bold;color:#fff;letter-spacing:1px}
 
+/* Social Share Grid for Refer */
 .social-share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 .social-share-btn{border:0;border-radius:10px;padding:10px 4px;font-size:11px;font-weight:900;color:#fff;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
 .whatsapp-share{background:#25d366}
@@ -17,6 +18,7 @@
 .telegram-share{background:#0088cc}
 .facebook-share{background:#1877f2}
 
+/* Game Grid CSS */
 .game-cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
 .game-card-item{background:linear-gradient(135deg,#1e2636,#111722);border:1px solid #2a303b;border-radius:12px;padding:14px;text-align:center;cursor:pointer;text-decoration:none;color:#fff;transition:0.2s}
 .game-card-item:hover{border-color:#ffcf72;transform:translateY(-2px)}
@@ -96,13 +98,21 @@
       <button class="cash" style="margin-top:12px;background:linear-gradient(135deg,#ffb300,#f57c00)" type="button" onclick="openProfileModal('referModal')">REFER & EARN</button>
     </div>
 
+    <!-- গেম গ্রিড সেকশন (যাতে নতুন স্লট গেম ও আগের গেম একসাথে থাকে) -->
     <div class="card">
       <div style="font-size:16px;font-weight:900;margin-bottom:8px">🎮 All Games</div>
       <div class="game-cards-grid">
+        <!-- নতুন ভিআইপি স্লট গেম -->
         <a href="slot.html" target="_blank" class="game-card-item">
           <div class="game-card-icon">🎰</div>
           <div class="game-card-title">VIP Slot Game</div>
         </a>
+        <!-- আগের সুপার এস গেম -->
+        <a href="game.html" target="_blank" class="game-card-item">
+          <div class="game-card-icon">🃏</div>
+          <div class="game-card-title">Super Ace</div>
+        </a>
+        <!-- আগের ক্র্যাশ গেম -->
         <div class="game-card-item" onclick="showScreen('gameScreen')">
           <div class="game-card-icon">✈️</div>
           <div class="game-card-title">Crash Game</div>
@@ -234,6 +244,7 @@
   <div class="nav"><button id="navHome" class="active" onclick="showScreen('homeScreen')">⌂<br>Home</button><button id="navGame" onclick="showScreen('gameScreen')">✈️<br>Game</button><button id="navProfile" onclick="showScreen('profileScreen')">👤<br>Profile</button></div>
 </div>
 
+<!-- Firebase SDK & Real-time Numbers Listener -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -552,7 +563,7 @@ function modalBackdrop(e,id){if(e.target===e.currentTarget)closeProfileModal(id)
 function selectMethod(method){demoDepositMethod=method;document.getElementById('depositMethod').textContent='Selected: '+method;document.querySelectorAll('#depositModal .payment-logo').forEach(b=>b.classList.remove('active'));const id={bKash:'depositMethodBkash',Nagad:'depositMethodNagad',Rocket:'depositMethodRocket'}[method];document.getElementById(id).classList.add('active');updateDepositNumberDisplay()}
 function updateDepositPreview(){const amount=Math.max(0,Number(document.getElementById('depositAmount').value)||0),bonus=Math.round(amount*.20);document.getElementById('depositPreview').textContent='৳'+fmt(amount);document.getElementById('depositBonusPreview').textContent='৳'+fmt(bonus);document.getElementById('depositTotalPreview').textContent='৳'+fmt(amount+bonus)}
 function clearQuickDepositActive(){document.querySelectorAll('#depositModal .quick-amount').forEach(b=>b.classList.remove('active'))}
-function setDepositAmount(amount){document.getElementById('depositAmount').value=amount;updateDepositPreview();document.querySelectorAll('#depositModal .quick-amount').forEach(b=>b.classList.toggle('active',b.textContent.replace(/[^0-9]/g, '') === String(amount)))}
+function setDepositAmount(amount){document.getElementById('depositAmount').value=amount;updateDepositPreview();document.querySelectorAll('#depositModal .quick-amount').forEach(b=>b.classList.toggle('active',b.textContent.replace(/[^0-9]/g,'')===String(amount)))}
 
 function submitDemoDeposit(){
     const amount=Number(document.getElementById('depositAmount').value);
@@ -722,7 +733,7 @@ function saveNickname(){
     setTimeout(()=>document.getElementById('nicknameForm').classList.remove('show'),700)
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){['referModal','depositModal','depositSuccessModal','moneyModal','withdrawSuccessModal','passwordModal'].forEach(id=>closeProfileModal(id));closePasswordModal()}})
+document.addEventListener('keydown',e=>{e.key==='Escape'&&(['referModal','depositModal','depositSuccessModal','moneyModal','withdrawSuccessModal','passwordModal'].forEach(id=>closeProfileModal(id)),closePasswordModal())})
 window.addEventListener('DOMContentLoaded',()=>{
     checkAuthStatus();
     startCountdown();
