@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Ace - Low Win Config</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         body {
             background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -209,7 +209,7 @@
     <div class="slot-grid" id="slotGrid"></div>
 
     <div class="info-panel">
-        <div>Bal: <span id="balanceVal">25000</span>৳</div>
+        <div>Bal: <span id="balanceVal">0.00</span>৳</div>
         <div>Win: <span id="winVal">0.00</span>৳</div>
         <div>FreeSpins: <span id="freeSpinVal">0</span></div>
     </div>
@@ -226,6 +226,26 @@
 </div>
 
 <script>
+    // --- মূল প্রোফাইল এবং অ্যাপের ডাটাবেজের সাথে ব্যালেন্স সিঙ্ক করার লজিক ---
+    let usersDb = JSON.parse(localStorage.getItem('aviator_users_db')) || {};
+    let currentUserPhone = localStorage.getItem('aviator_current_user') || null;
+
+    function getUserBalance() {
+        if (currentUserPhone && usersDb[currentUserPhone]) {
+            return Number(usersDb[currentUserPhone].balance) || 0;
+        }
+        return 0;
+    }
+
+    function updateUserBalance(newBalance) {
+        if (currentUserPhone && usersDb[currentUserPhone]) {
+            usersDb[currentUserPhone].balance = newBalance;
+            localStorage.setItem('aviator_users_db', JSON.stringify(usersDb));
+        }
+    }
+
+    let balance = getUserBalance();
+
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playTune(type) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -261,12 +281,13 @@
         document.getElementById('onlineCountVal').innerText = onlineUsers.toLocaleString();
     }, 4000);
 
-    // প্রথম ৩০ মিনিট পর এবং এরপর প্রতি ১ ঘণ্টা পর পর ৩টি স্কেটার নিশ্চিত (ব্যাকএন্ড লজিক)
     let sessionStartTime = Date.now();
     let firstScatterDone = false;
     let nextScatterTargetTime = sessionStartTime + (30 * 60 * 1000);
 
     window.addEventListener('load', () => {
+        balance = getUserBalance();
+        document.getElementById('balanceVal').innerText = balance.toFixed(2);
         setTimeout(() => document.getElementById('loadingScreen').classList.add('fade-out'), 1800);
     });
 
@@ -283,8 +304,6 @@
 
     const scatterCard = { val: 'SCATTER', suit: '👑', color: '#ff4500', isScatter: true };
 
-    let balance = 25000;
-    // নির্ধারিত লিমিট: [15, 20, 30, 40, 50, 60, 100, 180, 200]
     const betLevels = [15, 20, 30, 40, 50, 60, 100, 180, 200];
     let betIndex = 0;
     let freeSpins = 0;
@@ -306,8 +325,12 @@
     }
 
     function buySelectedScatter(cost, spins) {
-        if (isSpinning || balance < cost) { alert('Insufficient balance!'); return; }
-        balance -= cost; document.getElementById('balanceVal').innerText = balance.toFixed(2);
+        if (isSpinning) return;
+        balance = getUserBalance();
+        if (balance < cost) { alert('Insufficient balance!'); return; }
+        balance -= cost; 
+        updateUserBalance(balance);
+        document.getElementById('balanceVal').innerText = balance.toFixed(2);
         freeSpins += spins; document.getElementById('freeSpinVal').innerText = freeSpins;
         toggleScatterModal(false); playTune('scatter');
         triggerWinPopup("👑 SCATTER PACK!", `${spins} Free Spins Added!`);
@@ -373,6 +396,8 @@
     function executeSpin() {
         if (isSpinning) return;
         let bet = getBetAmount();
+        balance = getUserBalance();
+        
         if (freeSpins <= 0 && balance < bet) {
             alert('Insufficient balance!');
             if (autoPlayInterval) toggleAutoPlay();
@@ -385,6 +410,7 @@
             document.getElementById('freeSpinVal').innerText = freeSpins;
         } else {
             balance -= bet;
+            updateUserBalance(balance);
             document.getElementById('balanceVal').innerText = balance.toFixed(2);
         }
 
@@ -394,7 +420,6 @@
         let newGrid = Array.from({length: 20}, () => cardData[Math.floor(Math.random() * cardData.length)]);
         let scatterCount = 0, scatterIndices = [];
 
-        // টাইম চেক লজিক (ব্যাকএন্ড)
         if (Date.now() >= nextScatterTargetTime) {
             scatterCount = 3;
             if (!firstScatterDone) {
@@ -417,7 +442,7 @@
         let allowWin = Math.random() < 0.25, matchIndices = [], winningCard = null;
         if (allowWin && scatterCount < 3) {
             winningCard = cardData[Math.floor(Math.random() * cardData.length)];
-            let matchCount = Math.floor(Math.random() * 2) + 2; // কম ম্যাচ
+            let matchCount = Math.floor(Math.random() * 2) + 2; 
             let available = [...Array(20).keys()].filter(idx => !scatterIndices.includes(idx));
             for (let m = 0; m < matchCount && available.length > 0; m++) {
                 let chosen = available.splice(Math.floor(Math.random() * available.length), 1)[0];
@@ -429,12 +454,12 @@
             let hasWon = false;
 
             if (scatterCount >= 3) {
-                freeSpins += 5; // কম ফ্রি স্পিন
+                freeSpins += 5; 
                 document.getElementById('freeSpinVal').innerText = freeSpins;
                 playTune('scatter');
-                // কম বোনাস উইন ক্যাপ
                 let bonusWin = Math.min(bet * 0.5, 10);
-                balance += bonusWin;
+                balance = getUserBalance() + bonusWin;
+                updateUserBalance(balance);
                 document.getElementById('balanceVal').innerText = balance.toFixed(2);
                 document.getElementById('winVal').innerText = bonusWin.toFixed(2);
                 triggerWinPopup("👑 3+ SCATTER!", `+5 Free Spins & ${bonusWin.toFixed(2)}৳!`);
@@ -447,10 +472,10 @@
             }
 
             if (allowWin && matchIndices.length >= 2 && scatterCount < 3) {
-                // খুব কম উইন ক্যালকুলেশন (উচ্চ বেটেও ছোট অ্যামাউন্ট)
                 let calculatedWin = bet * 0.05 * (matchIndices.length / 3);
                 if (calculatedWin < 0.10) calculatedWin = 0.10;
-                balance += calculatedWin;
+                balance = getUserBalance() + calculatedWin;
+                updateUserBalance(balance);
                 document.getElementById('balanceVal').innerText = balance.toFixed(2);
                 document.getElementById('winVal').innerText = calculatedWin.toFixed(2);
                 playTune('win');
