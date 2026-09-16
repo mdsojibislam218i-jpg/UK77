@@ -734,7 +734,22 @@ window.addEventListener('DOMContentLoaded',()=>{
     startCountdown();
     updateDepositPreview();
     renderWithdrawHistory();
-});
+});<!-- গেম গ্রিড সেকশন -->
+    <div class="card">
+      <div style="font-size:16px;font-weight:900;margin-bottom:8px">🎮 All Games</div>
+      <div class="game-cards-grid">
+        <!-- স্লট গেম লিংক -->
+        <a href="game.html" target="_blank" class="game-card-item">
+          <div class="game-card-icon">🎰</div>
+          <div class="game-card-title">VIP Slot Game</div>
+        </a>
+        <!-- ক্র্যাশ গেম লিংক -->
+        <div class="game-card-item" onclick="showScreen('gameScreen')">
+          <div class="game-card-icon">✈️</div>
+          <div class="game-card-title">Crash Game</div>
+        </div>
+      </div>
+    </div>
 </script>
 </body>
 </html>
