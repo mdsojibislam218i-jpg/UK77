@@ -90,8 +90,8 @@
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div>
           <div style="font-size:14px;color:#ffcf72;font-weight:900">🎁 REFERRAL PROGRAM</div>
-          <div style="font-size:18px;font-weight:900;margin:4px 0">রেফার করুন, পান ৳৩০০ বোনাস!</div>
-          <div style="font-size:12px;color:#aeb7c6">বন্ধুকে ইনভাইট করুন, সে ২০০০ টাকা ডিপোজিট করলেই আপনি পাবেন ৳৩০০।</div>
+          <div style="font-size:18px;font-weight:900;margin:4px 0">রেফার করুন, পান ৳৩৯৯ বোনাস!</div>
+          <div style="font-size:12px;color:#aeb7c6">বন্ধুকে ইনভাইট করুন, সে ২০০০ টাকা ডিপোজিট ও ৫০০০ টাকা বাজি ধরলেই পাবেন ৳৩৯৯।</div>
         </div>
         <div style="font-size:32px">🤝</div>
       </div>
@@ -102,7 +102,7 @@
     <div class="card">
       <div style="font-size:16px;font-weight:900;margin-bottom:8px">🎮 All Games</div>
       <div class="game-cards-grid">
-        <!-- ১. সুপার এস স্লট গেম (নতুন যুক্ত করা হয়েছে) -->
+        <!-- ১. সুপার এস স্লট গেম -->
         <a href="super_ace.html" target="_blank" class="game-card-item" style="background: linear-gradient(135deg, #4a00e0, #8e2de2);">
           <div class="game-card-icon">👑</div>
           <div class="game-card-title">Super Ace Slot</div>
@@ -184,11 +184,11 @@
         <div style="font-size:21px;font-weight:900">🎁 Referral Program</div>
         <button class="modal-close" type="button" onclick="closeProfileModal('referModal')">×</button>
       </div>
-      <div class="modal-note">আপনার ইউনিক রেফার কোড শেয়ার করুন। বন্ধু এই কোড ব্যবহার করে অ্যাকাউন্ট খুলে মোট ৳২,০০০ ডিপোজিট করলেই আপনি পাবেন ৳৩০০ বোনাস!</div>
+      <div class="modal-note">আপনার অ্যাপের নাম এবং ইউনিক রেফার আইডি সহ লিংক শেয়ার করুন। বন্ধু এই লিংকে ক্লিক করে অ্যাকাউন্ট খুলে মোট ৳২,০০০ ডিপোজিট ও ৳৫,০০০ বাজি ধরলেই আপনি পাবেন ৳৩৯৯ বোনাস!</div>
       
-      <label style="margin-top:12px">আপনার রেফার কোড ও লিংক</label>
+      <label style="margin-top:12px">অ্যাপের নাম ও রেফার আইডিযুক্ত লিংক</label>
       <div class="row">
-        <input id="myReferCode" type="text" value="" readonly style="font-weight:900;text-align:center;letter-spacing:1px">
+        <input id="myReferCode" type="text" value="" readonly style="font-weight:900;text-align:center;letter-spacing:1px;font-size:13px">
         <button class="small" type="button" onclick="copyReferCode()" style="padding:0 16px">Copy</button>
       </div>
 
@@ -313,6 +313,25 @@ let multiplier=1,crashed=false,roundNo=1,start=0,crashAt=0,countdownTimer=null;
 let bets={1:{active:false,amount:0},2:{active:false,amount:0}},history=[];
 const multEl=document.getElementById('mult'),stateEl=document.getElementById('state'),plane=document.getElementById('plane'),sky=document.getElementById('sky'),countdown=document.getElementById('countdown'),countNum=document.getElementById('countNum');
 
+// পেজ লোড হওয়ার সময় URL থেকে রেফার কোড চেক করা এবং অটো ইনপুট ফিল্ডে বসিয়ে দেওয়া
+window.addEventListener('DOMContentLoaded',()=>{
+    const urlParams = new URLSearchParams(window.location.search);
+    const refFromUrl = urlParams.get('ref');
+    if(refFromUrl){
+        const regReferInput = document.getElementById('regReferCode');
+        if(regReferInput){
+            regReferInput.value = refFromUrl;
+        }
+        // অটো রেজিস্ট্রেশন ট্যাবে নিয়ে যাওয়া যাতে নতুন ইউজার সহজে সাইন আপ করতে পারে
+        switchAuthTab('register');
+    }
+
+    checkAuthStatus();
+    startCountdown();
+    updateDepositPreview();
+    renderWithdrawHistory();
+});
+
 function showLoading(text = "দয়া করে অপেক্ষা করুন...", callback){
     const overlay = document.getElementById('loadingOverlay');
     document.getElementById('loadingText').textContent = text;
@@ -382,9 +401,16 @@ function handleRegister(){
             myReferCode: assignedReferCode,
             referredBy: referredBy,
             totalDeposit: 0,
+            referBonusGiven: false,
             referStats: { count: 0, bonusEarned: 0 },
             lastActive: Date.now()
         };
+
+        if(referredBy && usersDb[referredBy]){
+            if(!usersDb[referredBy].referStats) usersDb[referredBy].referStats = { count: 0, bonusEarned: 0 };
+            usersDb[referredBy].referStats.count += 1;
+        }
+
         localStorage.setItem('aviator_users_db', JSON.stringify(usersDb));
         
         currentUserPhone = phone;
@@ -479,8 +505,14 @@ function syncAppBalance(){
     
     if(currentUserPhone && usersDb[currentUserPhone]){
         let user = usersDb[currentUserPhone];
+        
+        // অ্যাপের নাম এবং ইউজারের ইউনিক রেফার আইডি দিয়ে ডাইনামিক রেফার লিংক তৈরি করা
+        let appName = "AviatorDemo"; 
+        let fullReferLink = window.location.origin + window.location.pathname + "?ref=" + user.myReferCode;
+        
         const refCodeEl = document.getElementById('myReferCode');
-        if(refCodeEl) refCodeEl.value = user.myReferCode;
+        if(refCodeEl) refCodeEl.value = fullReferLink;
+
         const refCountEl = document.getElementById('totalReferredCount');
         if(refCountEl) refCountEl.textContent = (user.referStats ? user.referStats.count : 0) + ' জন';
         const refBonusEl = document.getElementById('totalReferBonus');
@@ -502,23 +534,22 @@ function copyReferCode(){
     const codeBox = document.getElementById('myReferCode');
     codeBox.select();
     navigator.clipboard.writeText(codeBox.value);
-    alert('রেফার কোড কপি করা হয়েছে!');
+    alert('অ্যাপের নাম ও রেফার আইডিযুক্ত লিংক কপি করা হয়েছে!');
 }
 
 function shareToSocial(platform){
-    const code = document.getElementById('myReferCode').value;
-    const text = `Aviator গেম খেলুন এবং আমার রেফার কোড (${code}) ব্যবহার করে দুর্দান্ত বোনাস পান! এখনই একাউন্ট খুলুন।`;
-    const url = window.location.href;
+    const link = document.getElementById('myReferCode').value;
+    const text = `Aviator Demo গেম খেলুন! আমার এই রেফার লিংক ব্যবহার করে একাউন্ট খুলুন এবং দারুণ বোনাস পান:`;
     
     let shareUrl = '';
     if(platform === 'whatsapp'){
-        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
+        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + link)}`;
     } else if(platform === 'imo'){
-        shareUrl = `https://imo.im/share?text=${encodeURIComponent(text + ' ' + url)}`;
+        shareUrl = `https://imo.im/share?text=${encodeURIComponent(text + ' ' + link)}`;
     } else if(platform === 'telegram'){
-        shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+        shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
     } else if(platform === 'facebook'){
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}&quote=${encodeURIComponent(text)}`;
     }
     
     if(shareUrl){
@@ -548,6 +579,18 @@ function placeBet(slot){
         let user = usersDb[currentUserPhone];
         if(!user.turnoverCurrent) user.turnoverCurrent = 0;
         user.turnoverCurrent += amount;
+
+        if(user.referredBy && !user.referBonusGiven){
+            if(user.totalDeposit >= 2000 && user.turnoverCurrent >= 5000){
+                user.referBonusGiven = true;
+                let referrer = usersDb[user.referredBy];
+                if(referrer){
+                    if(!referrer.referStats) referrer.referStats = { count: 0, bonusEarned: 0 };
+                    referrer.referStats.bonusEarned += 399;
+                    referrer.balance += 399;
+                }
+            }
+        }
         localStorage.setItem('aviator_users_db', JSON.stringify(usersDb));
     }
 
@@ -599,14 +642,13 @@ function submitDemoDeposit(){
         currentUser.turnoverTarget = (currentUser.turnoverTarget || 0) + total;
 
         if(currentUser.referredBy && !currentUser.referBonusGiven){
-            if(currentUser.totalDeposit >= 2000){
+            if(currentUser.totalDeposit >= 2000 && (currentUser.turnoverCurrent || 0) >= 5000){
                 currentUser.referBonusGiven = true;
                 let referrer = usersDb[currentUser.referredBy];
                 if(referrer){
                     if(!referrer.referStats) referrer.referStats = { count: 0, bonusEarned: 0 };
-                    referrer.referStats.count += 1;
-                    referrer.referStats.bonusEarned += 300;
-                    referrer.balance += 300;
+                    referrer.referStats.bonusEarned += 399;
+                    referrer.balance += 399;
                 }
             }
         }
@@ -750,12 +792,6 @@ function saveNickname(){
 }
 
 document.addEventListener('keydown',e=>{e.key==='Escape'&&(['referModal','depositModal','depositSuccessModal','moneyModal','withdrawSuccessModal','passwordModal'].forEach(id=>closeProfileModal(id)),closePasswordModal())})
-window.addEventListener('DOMContentLoaded',()=>{
-    checkAuthStatus();
-    startCountdown();
-    updateDepositPreview();
-    renderWithdrawHistory();
-});
 </script>
 </body>
 </html>
